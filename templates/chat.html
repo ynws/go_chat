@@ -1,10 +1,55 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>chat</title>
-	</head>
-	<body>
-		test message with templates
-	</body>
+<head>
+<meta charset="UTF-8">
+<title>chat</title>
+<style>
+input {
+	display: block;
+}
+
+ul {
+	list-style: none;
+}
+</style>
+</head>
+<body>
+	<ul id="messages"></ul>
+	simple chat
+	<form id="chatbox">
+		<textarea></textarea>
+		<input type="submit" value="send" />
+	</form>
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script>
+		$(function() {
+			var socket = null;
+			var msgBox = $("#chatbox textarea");
+			var messages = $("#messages");
+			$("#chatbox").submit(function() {
+				if (!msgBox.val())
+					return false;
+				if (!socket) {
+					alert("error: not connect");
+					return false;
+				}
+				socket.send(msgBox.val());
+				msgBox.val("");
+				return false;
+			});
+			if (!window["WebSocket"]) {
+				alert("error: browser not support WebSocket");
+			} else {
+				socket = new WebSocket("ws://localhost:8888/room");
+				socket.onclose = function() {
+					alert("room closed");
+				}
+				socket.onmessage = function(e) {
+					messages.append($("<li>").text(e.data));
+				}
+			}
+		});
+	</script>
+</body>
 </html>
