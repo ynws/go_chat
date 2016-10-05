@@ -41,7 +41,7 @@ ul {
 			if (!window["WebSocket"]) {
 				alert("error: browser not support WebSocket");
 			} else {
-				socket = new WebSocket("ws://localhost:8888/room");
+				socket = new WebSocket("ws://{{.Host}}/room");
 				socket.onclose = function() {
 					alert("room closed");
 				}
